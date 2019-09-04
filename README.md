@@ -2,9 +2,9 @@
 Application to test kernel iteration over different mesh accessors
 - simulates creating an arbitrarily refined mesh in 1,2, or 3D
 - then runs a kernel (a daxpy) over three different mesh accessors
-- - all cells
-- - most refined cells
-- - contiguous chunks of refined cells
+ - all cells
+ - most refined cells
+ - contiguous chunks of refined cells
 - Main is written in Fortran, and kernels in C++ to test language interoperability.
 
 # Getting the Code
@@ -28,7 +28,8 @@ First, build the fortran/Kokkos interop parts:
 - export KOKKOS_ROOT=/path/to/kokkos/installation
 - cd $(XTKROOT)/kokkos-fortran-interop/build
 - make libflcl.a
-Next, build xkt itself
+
+Next, build xkt itself:
 - cd $(XKTROOT)/build
 
 # Usage
