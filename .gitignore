@@ -8,3 +8,6 @@
 
 # vscode configuration
 .vscode/*
+
+# macos
+*.DS_Store
