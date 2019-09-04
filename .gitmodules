@@ -1,0 +1,3 @@
+[submodule "lib/flcl"]
+	path = lib/flcl
+	url = git@github.com:kokkos/kokkos-fortran-interop.git
