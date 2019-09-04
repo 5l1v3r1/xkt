@@ -1,11 +1,12 @@
 # xkt
-Application to test kernel iteration over different mesh accessors
+Application to test kernel iteration over different mesh accessors.
 - simulates creating an arbitrarily refined mesh in 1,2, or 3D
 - then runs a kernel (a daxpy) over three different mesh accessors
- - all cells
- - most refined cells
- - contiguous chunks of refined cells
-- Main is written in Fortran, and kernels in C++ to test language interoperability.
+    - all cells
+    - most refined cells
+    - contiguous chunks of refined cells
+
+The application main is written in Fortran, and kernels in C++ to test language interoperability.
 
 # Getting the Code
 To check out the source code for xkt,
