@@ -27,14 +27,33 @@ features as they move towards release. Then, feature branches as necessary.
 # Build Instructions
 First, build the fortran/Kokkos interop parts:
 - export KOKKOS_ROOT=/path/to/kokkos/installation
-- cd $(XTKROOT)/kokkos-fortran-interop/build
+- cd $(XTKROOT)/lib/flcl/build
 - make libflcl.a
+- (optionally, run the tests)
+    - make test_flcl.x
+    - ./test_flcl.x
 
-Next, build xkt itself:
+Next, build and run xkt itself:
 - cd $(XKTROOT)/build
+- ./xkt.x
+
 
 # Usage
-TODO.
+xkt is meant to simulate running a kernel of an AMR-like mesh with three differing
+access patterns. To wit, it has a few compile-time parameters to control the rough
+size of the mesh `m`, the dimension of the mesh `dimension`, and the amount of
+refinement, both `percentage` and `refine_steps`.
+
+Sensible values for `m` might be from low tens of thousands to several million.
+
+`dimension` is meant to correspond to a physical dimension, and so should be 1, 2, or 3.
+
+`percentage` is roughly how much of the mesh is refined, and `refine_steps` is how
+many times the mesh is refined. All of the refinement is at random locations away from
+the boundaries of the mesh.
+
+Since the kernels are all Kokkos `parallel_for`, we will typically use Kokkos'
+profiling hooks to monitor performance. See: [Kokkos profiling](https://github.com/kokkos/kokkos-tools)
 
 # Feedback
 Please raise an issue using the [GitHub issues](https://github.com/lanl/xkt/issues)
