@@ -3,6 +3,7 @@
 #include <vector>
 #include <iostream>
 #include <cstdlib>
+#include <Kokkos_ScatterView.hpp>
 
 using std::vector;
 using std::cout;
@@ -20,7 +21,7 @@ void list_amr_vector( vector<T>& amr_vector) {
 
 }
 
-enum cell_loop_t { clt_all, clt_ltop, clt_chunks };
+enum cell_loop_t { clt_all, clt_ltop, clt_chunks, clt_all_scatter };
 
 template< class T>
 void cell_loop( const c_levels_t& c_levs, const cell_loop_t loop_type, const T& t ) {
@@ -67,6 +68,10 @@ void cell_loop( const c_levels_t& c_levs, const cell_loop_t loop_type, const T& 
       }      
     );
 
+  } else if (loop_type == clt_all_scatter) {
+    
+    Kokkos::parallel_for("clt_all_scatter",c_levs.n, t);
+  
   }
 }
 
@@ -192,6 +197,26 @@ void c_axpy_ltop_chunks( flcl::dualview_r64_1d_t** v_x, flcl::dualview_r64_1d_t*
     }
   );
   cout << "c_axpy_ltop_chunks: finished" << endl;
+}
+
+void c_axpy_full_scatter( flcl::dualview_r64_1d_t**  v_x, flcl::dualview_r64_1d_t** v_y, const double &s_val, const c_levels_t &c_levs ) {
+  flcl::dualview_r64_1d_t::t_dev_const array_x = (*v_x)->d_view;
+  flcl::dualview_r64_1d_t::t_dev array_y = (*v_y)->d_view;
+  using view_type = typename flcl::dualview_r64_1d_t::t_dev;
+  using data_type = typename view_type::data_type;
+  using array_layout = typename view_type::array_layout;
+  using device_type = typename view_type::device_type;
+  using memory_traits = typename view_type::memory_traits;
+  using scatterview_type = Kokkos::Experimental::ScatterView<data_type, array_layout, Kokkos::DefaultExecutionSpace, Kokkos::Experimental::ScatterSum>;
+
+  scatterview_type scatter(array_y);
+  cell_loop( c_levs, clt_all_scatter,  KOKKOS_LAMBDA(const int& ii) {
+    auto access = scatter.access();
+    // array_y(ii) += s_val * array_x(ii);
+    access(ii).update(s_val * array_x(ii));
+  } );
+  contribute(array_y, scatter);
+  cout << "c_axpy_full_scatter: finished" << endl;
 }
 
 }

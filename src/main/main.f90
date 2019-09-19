@@ -36,11 +36,11 @@ program main
   type(c_levels_t) :: c_levs
   
   ! sensible values for dimension might be 1,2,3
-  dimension = 3
+  dimension = 2
   block_size = 2**dimension
 
   ! sensible values for m might be 1e4 through 1e6 (or so)
-  m = 200000
+  m = 2000
 
 
   ! set up values for "refinement"
@@ -139,6 +139,9 @@ program main
 
   ! chunk axpy
   call axpy_ltop_chunks( v_x, v_y, s_val, c_levs )
+
+  ! full axpy w scatterview
+  call axpy_full_scatter( v_x, v_y, s_val, c_levs )
 
   call kokkos_deallocate_dualview( array_x, v_x )
   call kokkos_deallocate_dualview( array_y, v_y )

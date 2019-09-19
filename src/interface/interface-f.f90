@@ -79,6 +79,20 @@ module interface_f_mod
     end subroutine f_axpy_ltop_chunks
   end interface
 
+  interface
+    subroutine f_axpy_full_scatter( v_x, v_y, s_val, c_levs ) &
+      & bind(c, name="c_axpy_full_scatter")
+      use, intrinsic :: iso_c_binding
+      use :: flcl_mod
+      use :: levels_f_mod
+      implicit none
+      type(c_ptr), intent(inout) :: v_x
+      type(c_ptr), intent(inout) :: v_y
+      real(c_double), intent(inout) :: s_val
+      type(c_levels_t), intent(inout) :: c_levs
+    end subroutine f_axpy_full_scatter
+  end interface
+
   contains
 
     subroutine kokkos_initialize()
@@ -160,5 +174,17 @@ module interface_f_mod
       call f_axpy_ltop_chunks( v_x, v_y, s_val, c_levs )
     end subroutine axpy_ltop_chunks
 
+    subroutine axpy_full_scatter( v_x, v_y, s_val, c_levs )
+      use, intrinsic :: iso_c_binding
+      use :: flcl_mod
+      use :: levels_f_mod
+      implicit none
+      real(c_double), intent(inout) :: s_val
+      type(c_levels_t), intent(inout) :: c_levs
+      type(c_ptr), intent(inout) :: v_x
+      type(c_ptr), intent(inout) :: v_y
+
+      call f_axpy_full_scatter( v_x, v_y, s_val, c_levs )
+    end subroutine axpy_full_scatter
 
 end module interface_f_mod
